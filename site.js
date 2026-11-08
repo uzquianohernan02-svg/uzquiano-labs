@@ -54,17 +54,38 @@
     });
   });
 
-  // Contact form -> opens the visitor's email app (no server, nothing stored)
+  // Contact form -> Google Apps Script web app -> Hernan's Gmail.
+  // If FORM_ENDPOINT is empty, falls back to opening the visitor's email app.
+  var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbytzl3SzY5ou0Iai8U5D7GwyvdWcLjdsBWT73Ybzi9wwLUxCAADvtl3hLQcslSGJTyJOg/exec';
   var form = document.getElementById('quoteForm');
   if (form) form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var f = form.elements;
-    var subject = 'Project inquiry: ' + f.service.value + ' (' + f.name.value + ')';
-    var body = 'Name: ' + f.name.value + '\nEmail: ' + f.email.value +
-      (f.company.value ? '\nCompany: ' + f.company.value : '') +
-      '\nService: ' + f.service.value + '\nTimeline: ' + f.timeline.value +
-      '\n\nProject details:\n' + f.message.value;
-    location.href = 'mailto:uzquianohernan02@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    var f = form.elements, btn = form.querySelector('button[type="submit"]'), status = document.getElementById('formStatus');
+    var data = {
+      name: f.name.value, email: f.email.value, company: f.company.value,
+      service: f.service.value, timeline: f.timeline.value, message: f.message.value,
+      website: f.website ? f.website.value : ''
+    };
+    function show(msg, kind) { status.textContent = msg; status.className = 'form-status ' + (kind || ''); }
+
+    if (!FORM_ENDPOINT) {
+      var subject = 'Project inquiry: ' + data.service + ' (' + data.name + ')';
+      var body = 'Name: ' + data.name + '\nEmail: ' + data.email + (data.company ? '\nCompany: ' + data.company : '') +
+        '\nService: ' + data.service + '\nTimeline: ' + data.timeline + '\n\nProject details:\n' + data.message;
+      location.href = 'mailto:uzquianohernan02@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      return;
+    }
+
+    btn.disabled = true; btn.dataset.label = btn.dataset.label || btn.innerHTML; btn.textContent = 'Sending…'; show('');
+    // text/plain avoids a CORS preflight, which Apps Script does not answer
+    fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok) { form.reset(); show('Thanks! Your message was sent. I’ll reply to you by email.', 'ok'); }
+        else { show((res && res.error) || 'Sending failed. Please email uzquianohernan02@gmail.com directly.', 'err'); }
+      })
+      .catch(function () { show('Sending failed. Please email uzquianohernan02@gmail.com directly.', 'err'); })
+      .then(function () { btn.disabled = false; btn.innerHTML = btn.dataset.label; });
   });
 
   var y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
