@@ -159,6 +159,7 @@ section.alt { background: var(--bg-alt); }
 .stack span { font: 500 12.5px "JetBrains Mono", monospace; padding: 4px 9px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--border); }
 .svc .quote { margin-top: auto; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px dashed var(--border); margin-top: 26px; }
 .svc .quote span { font-size: 14px; color: var(--muted); }
+.svc .quote .price b { font: 700 24px "Sora", sans-serif; color: var(--text); letter-spacing: -.02em; margin-right: 2px; }
 .svc .quote a { font-weight: 600; font-size: 14.5px; color: var(--accent); display: inline-flex; gap: 6px; align-items: center; }
 .svc .quote a svg { width: 16px; height: 16px; transition: transform .15s; }
 .svc .quote a:hover svg { transform: translateX(3px); }
