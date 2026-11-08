@@ -272,8 +272,10 @@
               </select>
             </div>
             <div class="field"><label for="f-msg">Project details</label><textarea id="f-msg" name="message" required placeholder="What are you building, and what do you need help with?"></textarea></div>
+            <div class="hp" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" tabindex="-1" autocomplete="off" /></div>
             <button class="btn btn-primary" type="submit"><svg><use href="#i-send"/></svg> Send inquiry</button>
-            <p class="form-note">This opens your email app with the message ready to send. Nothing is stored on this website.</p>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+            <p class="form-note">Your message is sent straight to my inbox. See the <a href="privacy.html" style="color:var(--accent)">privacy policy</a>.</p>
           </form>
         </div>
       </div>
